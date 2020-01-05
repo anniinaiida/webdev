@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>asiakas</title>
+    <script>
+        $(function () {
+            haeAsiakasTyypit();
+
+            $('#muutaTiedot').click(function () {
+                muuta();
+            })
+
+            $('#haetuote').click(function () {
+                haeAsiakas();
+            })
+        });
+        function haeAsiakas() {
+            let tyyppi = $("#asiakastyyppi").val();
+            let nimi = $("#nimi").val();
+            let osoite = $("#osoite").val();
+            let query = "";
+            let asiakastyyppi = "";
+
+            if (tyyppi != "-1")
+                query += "asty_avain=" + tyyppi + "&";
+            if (nimi != "")
+                query += "nimi=" + nimi + "&";
+            if (osoite != "")
+                query += "osoite=" + osoite + "&";
+            console.log(query);
+
+            $.get(
+                "http://localhost:3001/asiakas?" + query,
+
+                function (data, status, xhr) {
+
+                    $('#asiakastiedot').empty();
+                    $("#asiakastiedot").append("<tr>" + "<th>" + 'Nimi' + "</th>" + "<th>" + 'Osoite' + "</th>" + "<th>" + 'Postinumero' + "</th>" + "<th>" + 'Asiakastyyppi' + "</th>" + "</tr>");
+                    console.log(data);
+                    $.each(data, function (index, data) {
+                        console.log(data);
+                        let str = "<tr>" + "<td>" + data.NIMI + "</td>" + "<td>" + data.OSOITE + "</td>" + "<td>" + data.POSTINRO + "</td><td>" +
+                            data.TYYPPI_SELITE + "</td><td>" + '<button onclick="poista(' + data.AVAIN + ')">' + 'Poista' + '</button>' + "</td><td>" +
+                            '<button onclick="avaaDialogi(' + data.AVAIN + ')">' + 'Muuta' + '</button>' + "</td>" + "</tr>";
+
+                        $("#asiakastiedot").append(str);
+
+                    });
+                }
+            )
+        }
+
+        function muuta(param) {
+            let result = null;
+
+            let data = {
+                Nimi: $("#nimi_").val()
+                , Asty_avain: $("#asiakastyyppi_").val()
+                , Osoite: $("#osoite_").val()
+                , Postinro: $("#postinumero_").val()
+                , Postitmp: $("#postitmp_").val()
+            };
+
+            console.log("Debug muuta", $("#id_").val());
+            $.ajax(
+                {
+                    url: '/asiakas/' + $("#id_").val(),
+                    method: 'PUT',
+                    data: data
+                }).done(function (data, textStatus, jqXHR) {
+                    result = data;
+                    console.log("result muuta: ", data);
+                    console.log("status code: ", jqXHR.status);
+                    haeAsiakas();
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Call failed: " + errorThrown);
+                });
+
+            return result;
+        }
+
+        /**
+         * Avaa dialogin ja päivittää dialogin datan
+         * HAE ASIAKKAAN TIEDOT AVAIMEN PERUSTEELLA
+         */
+        function avaaDialogi(param) {
+            $(document).ready(function () {
+                $("#dialog").dialog().dialog("open");
+            });
+
+            $.ajax(
+                {
+                    url: '/asiakas/' + param,
+                    method: 'GET'
+                }).done(function (data, textStatus, jqXHR) {
+                    data = data[0];
+                    console.log("result avaaDialogi: ", data);
+                    console.log("status code: ", jqXHR.status);
+
+                    $("#nimi_").val(data.NIMI);
+                    $("#id_").val(param);
+                    $("#osoite_").val(data.OSOITE);
+                    $("#postinumero_").val(data.POSTINRO);
+                    $("#postitmp_").val(data.POSTITMP);
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log("Call failed: " + errorThrown);
+                });
+        }
+
+        $(function () {
+            $('#lisaa').click(function () {
+                lisaaAsiakas();
+            })
+        });
+
+
+
+        function lisaaAsiakas() {
+            var d = new Date();
+            let data = {
+                Nimi: $("#nimi").val()
+                , Asty_avain: $("#asiakastyyppi").val()
+                , Osoite: $("#osoite").val()
+                , Postinro: $("#postinumero").val()
+                , Postitmp: $("#postitmp").val()
+                , LUONTIPVM: d.getDate()
+            };
+            let query = "";
+
+            $.ajax(
+                {
+                    url: '/asiakas',
+                    method: 'POST',
+                    data: data
+                }).done(function (data, textStatus, jqXHR) {
+                    result = data;
+                    console.log("result: ", data);
+                    console.log("status code: ", jqXHR.status);
+                    haeAsiakas();
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Call failed: " + errorThrown);
+                });
+        }
+
+        function haeAsiakasTyypit() {
+            $.get(
+                "http://localhost:3001/Asiakastyyppi",
+                function (data, status, xhr) {
+                    $("#asiakastyyppi").append('<option value="-1">Valitse</option>');
+                    $.each(data, function (index, data) {
+                        $("#asiakastyyppi").append('<option value="' + data.Avain + '">' + data.Lyhenne + ", " + data.Selite + "</option>");
+
+                    });
+                })
+        }
+
+        function poista(param) {
+            let result = null;
+
+            $.ajax(
+                {
+                    url: '/asiakas/' + param,
+                    method: 'DELETE'
+
+                }).done(function (data, textStatus, jqXHR) {
+                    result = data;
+                    console.log("result: ", data);
+                    console.log("status code: ", jqXHR.status);
+                    haeAsiakas();
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                    console.log("Call failed: " + errorThrown);
+                });
+
+            return result;
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <label>Nimi<input id="nimi"></input></label><br /><br />
+    <label>Osoite<input id="osoite"></input></label><br /><br />
+    <label>Postinumero<input id="postinumero"></input></label><br /><br />
+    <label>Postitoimipaikka<input id="postitmp"></input></label><br /><br />
+    <label>Asiakastyyppi<select id="asiakastyyppi">
+        </select></label><br /><br />
+    <button id="haetuote">Hae</button>
+    <button id="lisaa">Lisää</button>
+    <table id="asiakastiedot"></table>
+
+    <div id="dialog" title="Muuta tietoja" style="display:none">
+        <p><label>Nimi<input id="nimi_"></input></label><br /><br />
+            <label>Osoite<input id="osoite_"></input></label><br /><br />
+            <label>Postinumero<input id="postinumero_"></input></label><br /><br />
+            <label>Postitoimipaikka<input id="postitmp_"></input></label><br /><br />
+            <input id="id_" type="hidden" />
+            <button id="muutaTiedot">mUUTA</button>
+            <button id="peruuta">pERUUTA</button> </p>
+    </div>
+</body>
+
+</html>

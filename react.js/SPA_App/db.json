@@ -1,0 +1,112 @@
+{
+  "autot": [
+    {
+      "id": 1,
+      "Merkki": "Opel",
+      "Malli": "Astra"
+    },
+    {
+      "id": 2,
+      "Merkki": "Mercedez Benz",
+      "Malli": "CLK"
+    },
+    {
+      "id": 67,
+      "Merkki": "Lada",
+      "Malli": "Niva"
+    },
+    {
+      "id": 112,
+      "Merkki": "Mazda",
+      "Malli": "627"
+    },
+    {
+      "id": 113,
+      "Merkki": "BMW",
+      "Malli": "530d"
+    },
+    {
+      "Merkki": "Vw",
+      "Malli": "Golf",
+      "id": 114
+    },
+    {
+      "Merkki": "Toyota",
+      "Malli": "Yaris II",
+      "id": 115
+    },
+    {
+      "id": 116,
+      "Merkki": "Toyota",
+      "Malli": "Yaris II"
+    }
+  ],
+
+  "myyjat": [
+    {
+      "id": 1,
+      "nimi": "Maija Mehiläinen",
+      "rooli": "Myyjä"
+    },
+    {
+      "id": 2,
+      "nimi": "Liisa Litmanen",
+      "rooli": "Myyjä"
+    }
+  ],
+
+  "profiili": {
+    "name": "autokauppias"
+  },
+
+  "asiakas": [
+    {
+      "id": 1,
+      "Nimi": "Anneli",
+      "Osoite": "Astrakatu",
+      "Postinumero": "07000",
+      "Postitoimipaikka": "Kuopsala",
+      "Puhelinnumero": "0405129555",
+      "Tyyppi_id": "1"
+    },
+    {
+        "id": 2,
+        "Nimi": "Monneli",
+        "Osoite": "Volvotie",
+        "Postinumero": "70100",
+        "Postitoimipaikka": "Astra",
+        "Puhelinnumero": "95036552",
+        "Tyyppi_id": "1"
+      },
+      {
+        "id": 3,
+        "Nimi": "Nipsu",
+        "Osoite": "Naapurikuja",
+        "Postinumero": "41000",
+        "Postitoimipaikka": "Nakkila",
+        "Puhelinnumero": "04055966",
+        "Tyyppi_id": "2"
+      },
+      {
+        "id": 4,
+        "Nimi": "Kapsu",
+        "Osoite": "Seivästie",
+        "Postinumero": "85500",
+        "Postitoimipaikka": "Kilkemi",
+        "Puhelinnumero": "05036255",
+        "Tyyppi_id": "2"
+      }
+  ],
+  "Asiakastyyppi": [
+    {
+      "id": 1,
+      "lyhenne": "YA",
+      "selite": "Yritysasiakas"
+    },
+    {
+      "id": 2,
+      "lyhenne": "KA",
+      "selite": "Kuluttaja-asiakas"
+    }
+  ]
+}
